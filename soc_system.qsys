@@ -932,6 +932,27 @@
          type = "String";
       }
    }
+   element pps_time_out
+   {
+      datum _sortIndex
+      {
+         value = "46";
+         type = "int";
+      }
+   }
+   element pps_time_out.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "36864";
+         type = "String";
+      }
+   }
    element soc_system
    {
       datum _originalDeviceFamily
@@ -1265,6 +1286,11 @@
  <interface
    name="pps_count_out_external_connection"
    internal="pps_count_out.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="pps_time_out_external_connection"
+   internal="pps_time_out.external_connection"
    type="conduit"
    dir="end" />
  <interface name="reset" internal="clk_50.clk_in_reset" type="reset" dir="end" />
@@ -2669,6 +2695,24 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="32" />
  </module>
+ <module
+   name="pps_time_out"
+   kind="altera_avalon_pio"
+   version="18.1"
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="true" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="true" />
+  <parameter name="irqType" value="EDGE" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="26" />
+ </module>
  <module name="sw" kind="altera_avalon_pio" version="18.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -3135,6 +3179,15 @@
   <parameter name="baseAddress" value="0x01f0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="mm_bridge_0.m0"
+   end="pps_time_out.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x9000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <connection kind="clock" version="18.1" start="clk_50.clk" end="sysid_qsys.clk" />
  <connection kind="clock" version="18.1" start="clk_50.clk" end="jtag_uart.clk" />
  <connection kind="clock" version="18.1" start="clk_50.clk" end="mm_bridge_0.clk" />
@@ -3182,6 +3235,7 @@
    version="18.1"
    start="clk_50.clk"
    end="pps_count_out.clk" />
+ <connection kind="clock" version="18.1" start="clk_50.clk" end="pps_time_out.clk" />
  <connection
    kind="clock"
    version="18.1"
@@ -3448,6 +3502,13 @@
    end="dcc_data_16.irq">
   <parameter name="irqNumber" value="15" />
  </connection>
+ <connection
+   kind="interrupt"
+   version="18.1"
+   start="hps_0.f2h_irq1"
+   end="pps_time_out.irq">
+  <parameter name="irqNumber" value="16" />
+ </connection>
  <connection kind="interrupt" version="18.1" start="ILC.irq" end="jtag_uart.irq">
   <parameter name="irqNumber" value="0" />
  </connection>
@@ -3662,6 +3723,11 @@
    version="18.1"
    start="clk_50.clk_reset"
    end="pps_count_out.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="clk_50.clk_reset"
+   end="pps_time_out.reset" />
  <connection
    kind="reset"
    version="18.1"

@@ -2,7 +2,6 @@
 module soc_system (
 	clk_clk,
 	dcc_data_0_external_connection_export,
-	dcc_data_1_external_connection_export,
 	dcc_data_10_external_connection_export,
 	dcc_data_11_external_connection_export,
 	dcc_data_12_external_connection_export,
@@ -13,6 +12,7 @@ module soc_system (
 	dcc_data_17_external_connection_export,
 	dcc_data_18_external_connection_export,
 	dcc_data_19_external_connection_export,
+	dcc_data_1_external_connection_export,
 	dcc_data_20_external_connection_export,
 	dcc_data_21_external_connection_export,
 	dcc_data_22_external_connection_export,
@@ -127,11 +127,11 @@ module soc_system (
 	memory_oct_rzqin,
 	pps_count_out_external_connection_export,
 	reset_reset_n,
-	sw_external_connection_export);	
+	sw_external_connection_export,
+	pps_time_out_external_connection_export);	
 
 	input		clk_clk;
 	input	[31:0]	dcc_data_0_external_connection_export;
-	input	[31:0]	dcc_data_1_external_connection_export;
 	input	[31:0]	dcc_data_10_external_connection_export;
 	input	[31:0]	dcc_data_11_external_connection_export;
 	input	[31:0]	dcc_data_12_external_connection_export;
@@ -142,6 +142,7 @@ module soc_system (
 	input	[31:0]	dcc_data_17_external_connection_export;
 	input	[31:0]	dcc_data_18_external_connection_export;
 	input	[31:0]	dcc_data_19_external_connection_export;
+	input	[31:0]	dcc_data_1_external_connection_export;
 	input	[31:0]	dcc_data_20_external_connection_export;
 	input	[31:0]	dcc_data_21_external_connection_export;
 	input	[31:0]	dcc_data_22_external_connection_export;
@@ -257,4 +258,5 @@ module soc_system (
 	input	[31:0]	pps_count_out_external_connection_export;
 	input		reset_reset_n;
 	input	[13:0]	sw_external_connection_export;
+	input	[25:0]	pps_time_out_external_connection_export;
 endmodule

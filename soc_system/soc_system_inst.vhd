@@ -2,7 +2,6 @@
 		port (
 			clk_clk                                  : in    std_logic                     := 'X';             -- clk
 			dcc_data_0_external_connection_export    : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
-			dcc_data_1_external_connection_export    : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			dcc_data_10_external_connection_export   : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			dcc_data_11_external_connection_export   : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			dcc_data_12_external_connection_export   : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
@@ -13,6 +12,7 @@
 			dcc_data_17_external_connection_export   : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			dcc_data_18_external_connection_export   : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			dcc_data_19_external_connection_export   : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
+			dcc_data_1_external_connection_export    : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			dcc_data_20_external_connection_export   : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			dcc_data_21_external_connection_export   : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			dcc_data_22_external_connection_export   : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
@@ -127,7 +127,8 @@
 			memory_oct_rzqin                         : in    std_logic                     := 'X';             -- oct_rzqin
 			pps_count_out_external_connection_export : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			reset_reset_n                            : in    std_logic                     := 'X';             -- reset_n
-			sw_external_connection_export            : in    std_logic_vector(13 downto 0) := (others => 'X')  -- export
+			sw_external_connection_export            : in    std_logic_vector(13 downto 0) := (others => 'X'); -- export
+			pps_time_out_external_connection_export  : in    std_logic_vector(25 downto 0) := (others => 'X')  -- export
 		);
 	end component soc_system;
 
@@ -135,7 +136,6 @@
 		port map (
 			clk_clk                                  => CONNECTED_TO_clk_clk,                                  --                               clk.clk
 			dcc_data_0_external_connection_export    => CONNECTED_TO_dcc_data_0_external_connection_export,    --    dcc_data_0_external_connection.export
-			dcc_data_1_external_connection_export    => CONNECTED_TO_dcc_data_1_external_connection_export,    --    dcc_data_1_external_connection.export
 			dcc_data_10_external_connection_export   => CONNECTED_TO_dcc_data_10_external_connection_export,   --   dcc_data_10_external_connection.export
 			dcc_data_11_external_connection_export   => CONNECTED_TO_dcc_data_11_external_connection_export,   --   dcc_data_11_external_connection.export
 			dcc_data_12_external_connection_export   => CONNECTED_TO_dcc_data_12_external_connection_export,   --   dcc_data_12_external_connection.export
@@ -146,6 +146,7 @@
 			dcc_data_17_external_connection_export   => CONNECTED_TO_dcc_data_17_external_connection_export,   --   dcc_data_17_external_connection.export
 			dcc_data_18_external_connection_export   => CONNECTED_TO_dcc_data_18_external_connection_export,   --   dcc_data_18_external_connection.export
 			dcc_data_19_external_connection_export   => CONNECTED_TO_dcc_data_19_external_connection_export,   --   dcc_data_19_external_connection.export
+			dcc_data_1_external_connection_export    => CONNECTED_TO_dcc_data_1_external_connection_export,    --    dcc_data_1_external_connection.export
 			dcc_data_20_external_connection_export   => CONNECTED_TO_dcc_data_20_external_connection_export,   --   dcc_data_20_external_connection.export
 			dcc_data_21_external_connection_export   => CONNECTED_TO_dcc_data_21_external_connection_export,   --   dcc_data_21_external_connection.export
 			dcc_data_22_external_connection_export   => CONNECTED_TO_dcc_data_22_external_connection_export,   --   dcc_data_22_external_connection.export
@@ -260,6 +261,7 @@
 			memory_oct_rzqin                         => CONNECTED_TO_memory_oct_rzqin,                         --                                  .oct_rzqin
 			pps_count_out_external_connection_export => CONNECTED_TO_pps_count_out_external_connection_export, -- pps_count_out_external_connection.export
 			reset_reset_n                            => CONNECTED_TO_reset_reset_n,                            --                             reset.reset_n
-			sw_external_connection_export            => CONNECTED_TO_sw_external_connection_export             --            sw_external_connection.export
+			sw_external_connection_export            => CONNECTED_TO_sw_external_connection_export,            --            sw_external_connection.export
+			pps_time_out_external_connection_export  => CONNECTED_TO_pps_time_out_external_connection_export   --  pps_time_out_external_connection.export
 		);
 

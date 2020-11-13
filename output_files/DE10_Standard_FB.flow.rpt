@@ -1,5 +1,5 @@
 Flow report for DE10_Standard_FB
-Wed Nov 04 19:33:34 2020
+Thu Nov 12 23:33:25 2020
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
 
 
@@ -40,15 +40,15 @@ refer to the applicable agreement for further details.
 +-------------------------------------------------------------------------------+
 ; Flow Summary                                                                  ;
 +---------------------------------+---------------------------------------------+
-; Flow Status                     ; Successful - Wed Nov 04 19:32:06 2020       ;
+; Flow Status                     ; Successful - Thu Nov 12 23:31:47 2020       ;
 ; Quartus Prime Version           ; 18.1.0 Build 625 09/12/2018 SJ Lite Edition ;
 ; Revision Name                   ; DE10_Standard_FB                            ;
 ; Top-level Entity Name           ; DE10_Standard_FB                            ;
 ; Family                          ; Cyclone V                                   ;
 ; Device                          ; 5CSXFC6D6F31C6                              ;
 ; Timing Models                   ; Final                                       ;
-; Logic utilization (in ALMs)     ; 9,236 / 41,910 ( 22 % )                     ;
-; Total registers                 ; 21349                                       ;
+; Logic utilization (in ALMs)     ; 9,432 / 41,910 ( 23 % )                     ;
+; Total registers                 ; 21904                                       ;
 ; Total pins                      ; 321 / 499 ( 64 % )                          ;
 ; Total virtual pins              ; 0                                           ;
 ; Total block memory bits         ; 814,596 / 5,662,720 ( 14 % )                ;
@@ -67,7 +67,7 @@ refer to the applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 11/04/2020 19:18:31 ;
+; Start date & time ; 11/12/2020 23:17:05 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; DE10_Standard_FB    ;
 +-------------------+---------------------+
@@ -78,7 +78,7 @@ refer to the applicable agreement for further details.
 +---------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------+--------------------------------+------------------+
 ; Assignment Name                       ; Value                                                                                                                                                                                                                                                     ; Default Value ; Entity Name                    ; Section Id       ;
 +---------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------+--------------------------------+------------------+
-; COMPILER_SIGNATURE_ID                 ; 182924282726489.160453910403716                                                                                                                                                                                                                           ; --            ; --                             ; --               ;
+; COMPILER_SIGNATURE_ID                 ; 182924282726489.160524461909356                                                                                                                                                                                                                           ; --            ; --                             ; --               ;
 ; ECO_REGENERATE_REPORT                 ; On                                                                                                                                                                                                                                                        ; Off           ; --                             ; --               ;
 ; ENABLE_SIGNALTAP                      ; On                                                                                                                                                                                                                                                        ; --            ; --                             ; --               ;
 ; FITTER_EFFORT                         ; Standard Fit                                                                                                                                                                                                                                              ; Auto Fit      ; --                             ; --               ;
@@ -107,7 +107,7 @@ refer to the applicable agreement for further details.
 ; MISC_FILE                             ; v/a2d_data_a/synthesis/../../a2d_data_a.qsys                                                                                                                                                                                                              ; --            ; --                             ; --               ;
 ; MISC_FILE                             ; ip/altsource_probe/hps_reset_bb.v                                                                                                                                                                                                                         ; --            ; --                             ; --               ;
 ; MISC_FILE                             ; soc_system/synthesis/../soc_system.cmp                                                                                                                                                                                                                    ; --            ; --                             ; --               ;
-; MISC_FILE                             ; soc_system/synthesis/../../C                                                                                                                                                                                                                              ; --            ; --                             ; --               ;
+; MISC_FILE                             ; soc_system/synthesis/../../E                                                                                                                                                                                                                              ; --            ; --                             ; --               ;
 ; MISC_FILE                             ; soc_system/synthesis/soc_system_hps_0_hps.svd                                                                                                                                                                                                             ; --            ; --                             ; --               ;
 ; MISC_FILE                             ; soc_system/synthesis/../../soc_system.qsys                                                                                                                                                                                                                ; --            ; --                             ; --               ;
 ; MISC_FILE                             ; soc_system/synthesis/submodules/sequencer/alt_types.pre.h                                                                                                                                                                                                 ; --            ; --                             ; --               ;
@@ -144,7 +144,7 @@ refer to the applicable agreement for further details.
 ; SLD_FILE                              ; db/stp1_auto_stripped.stp                                                                                                                                                                                                                                 ; --            ; --                             ; --               ;
 ; SLD_INFO                              ; QSYS_NAME a2d_data_a HAS_SOPCINFO 1 GENERATION_ID 1485074971                                                                                                                                                                                              ; --            ; a2d_data_a                     ; --               ;
 ; SLD_INFO                              ; QSYS_NAME a2d_data_b HAS_SOPCINFO 1 GENERATION_ID 1485074880                                                                                                                                                                                              ; --            ; a2d_data_b                     ; --               ;
-; SLD_INFO                              ; QSYS_NAME soc_system HAS_SOPCINFO 1 GENERATION_ID 1578682275                                                                                                                                                                                              ; --            ; soc_system                     ; --               ;
+; SLD_INFO                              ; QSYS_NAME soc_system HAS_SOPCINFO 1 GENERATION_ID 1605242369                                                                                                                                                                                              ; --            ; soc_system                     ; --               ;
 ; SLD_NODE_CREATOR_ID                   ; 110                                                                                                                                                                                                                                                       ; --            ; --                             ; auto_signaltap_0 ;
 ; SLD_NODE_ENTITY_NAME                  ; sld_signaltap                                                                                                                                                                                                                                             ; --            ; --                             ; auto_signaltap_0 ;
 ; SLD_NODE_PARAMETER_ASSIGNMENT         ; SLD_RAM_BLOCK_TYPE=AUTO                                                                                                                                                                                                                                   ; --            ; --                             ; auto_signaltap_0 ;
@@ -190,11 +190,11 @@ refer to the applicable agreement for further details.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:02:32     ; 1.4                     ; 5671 MB             ; 00:03:25                           ;
-; Fitter               ; 00:07:17     ; 1.3                     ; 7775 MB             ; 00:16:14                           ;
-; Assembler            ; 00:00:24     ; 1.0                     ; 5083 MB             ; 00:00:22                           ;
-; Timing Analyzer      ; 00:01:22     ; 1.9                     ; 5977 MB             ; 00:02:24                           ;
-; Total                ; 00:11:35     ; --                      ; --                  ; 00:22:25                           ;
+; Analysis & Synthesis ; 00:02:31     ; 1.4                     ; 5642 MB             ; 00:03:37                           ;
+; Fitter               ; 00:08:08     ; 1.3                     ; 7789 MB             ; 00:18:19                           ;
+; Assembler            ; 00:00:27     ; 1.0                     ; 5086 MB             ; 00:00:25                           ;
+; Timing Analyzer      ; 00:01:30     ; 2.0                     ; 5981 MB             ; 00:02:44                           ;
+; Total                ; 00:12:36     ; --                      ; --                  ; 00:25:05                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

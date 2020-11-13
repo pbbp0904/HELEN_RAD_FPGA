@@ -205,6 +205,7 @@ module DE10_Standard_FB(input CLOCK2_50,
     wire [31:0] dcc_data_31;
     wire [31:0] pps_count_out;
     wire [25:0] data_time_out;
+	 wire [25:0] pps_time_out;
     
     wire        hps_fpga_reset_n;
     wire [9:0]  fpga_led_internal;
@@ -383,9 +384,10 @@ module DE10_Standard_FB(input CLOCK2_50,
     .dcc_data_29_external_connection_export	 (dcc_data_29),               //              dcc_tail_out_external_connection.export
     .dcc_data_30_external_connection_export	 (dcc_data_30),               //              dcc_tail_out_external_connection.export
     .dcc_data_31_external_connection_export	 (dcc_data_31),               //              dcc_tail_out_external_connection.export
-    .dcc_time_out_external_connection_export	 (data_time_out),               //         dc_time_out_external_connection.export
-    .hps_read_bit_external_connection_export    (hps_read),                     //        hps_read_bit_external_connection.export
-    .pps_count_out_external_connection_export   (pps_count_out)
+    .dcc_time_out_external_connection_export	 (data_time_out),             //              dcc_time_out_external_connection.export
+    .hps_read_bit_external_connection_export  (hps_read),                  //              hps_read_bit_external_connection.export
+    .pps_count_out_external_connection_export (pps_count_out),
+	 .pps_time_out_external_connection_export  (pps_time_out)
     );
     
     // Imported from DCC Demo
@@ -621,9 +623,11 @@ module DE10_Standard_FB(input CLOCK2_50,
         
     end
     
+	 reg			 [25:0]			  pps_time;
     always @(posedge GPIO[0])
     begin
         pps_count = pps_count + 1;
+		  pps_time = counter;
     end
     
     // Sending out
@@ -709,6 +713,42 @@ module DE10_Standard_FB(input CLOCK2_50,
                 send_count = 0;
             end
         end
+		  else
+		  begin
+			   data_0     <= 32'hFFFFFFFF;
+            data_1     <= 32'hFFFFFFFF;
+            data_2     <= 32'hFFFFFFFF;
+            data_3     <= 32'hFFFFFFFF;
+            data_4     <= 32'hFFFFFFFF;
+            data_5     <= 32'hFFFFFFFF;
+            data_6     <= 32'hFFFFFFFF;
+            data_7     <= 32'hFFFFFFFF;
+            data_8     <= 32'hFFFFFFFF;
+            data_9     <= 32'hFFFFFFFF;
+            data_10    <= 32'hFFFFFFFF;
+            data_11    <= 32'hFFFFFFFF;
+            data_12    <= 32'hFFFFFFFF;
+            data_13    <= 32'hFFFFFFFF;
+            data_14    <= 32'hFFFFFFFF;
+            data_15    <= 32'hFFFFFFFF;
+            data_16    <= 32'hFFFFFFFF;
+            data_17    <= 32'hFFFFFFFF;
+            data_18    <= 32'hFFFFFFFF;
+            data_19    <= 32'hFFFFFFFF;
+            data_20    <= 32'hFFFFFFFF;
+            data_21    <= 32'hFFFFFFFF;
+            data_22    <= 32'hFFFFFFFF;
+            data_23    <= 32'hFFFFFFFF;
+            data_24    <= 32'hFFFFFFFF;
+            data_25    <= 32'hFFFFFFFF;
+            data_26    <= 32'hFFFFFFFF;
+            data_27    <= 32'hFFFFFFFF;
+            data_28    <= 32'hFFFFFFFF;
+            data_29    <= 32'hFFFFFFFF;
+            data_30    <= 32'hFFFFFFFF;
+            data_31    <= 32'hFFFFFFFF;
+		  
+		  end
     end
     
     assign dcc_data_0  = data_0;
@@ -746,6 +786,7 @@ module DE10_Standard_FB(input CLOCK2_50,
     
     assign data_time_out = data_time;
     assign pps_count_out = pps_count;
+	 assign pps_time_out  = pps_time;
     //
     //assign data_peak_out[13:0]  = data_peak_a;
     //assign data_peak_out[14]    = 0;

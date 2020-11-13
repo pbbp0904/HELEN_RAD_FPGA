@@ -20,9 +20,9 @@
 // Altera IRQ Mapper
 //
 // Parameters
-//   NUM_RCVRS        : 16
+//   NUM_RCVRS        : 17
 //   SENDER_IRW_WIDTH : 32
-//   IRQ_MAP          : 0:0,1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,11:11,12:12,13:13,14:14,15:15
+//   IRQ_MAP          : 0:0,1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,11:11,12:12,13:13,14:14,15:15,16:16
 //
 // -------------------------------------------------------
 
@@ -55,6 +55,7 @@ module soc_system_irq_mapper_001
     input                receiver13_irq,
     input                receiver14_irq,
     input                receiver15_irq,
+    input                receiver16_irq,
 
     // -------------------
     // Command Source (Output)
@@ -82,6 +83,7 @@ module soc_system_irq_mapper_001
         sender_irq[13] = receiver13_irq;
         sender_irq[14] = receiver14_irq;
         sender_irq[15] = receiver15_irq;
+        sender_irq[16] = receiver16_irq;
     end
 
 endmodule

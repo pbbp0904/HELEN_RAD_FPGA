@@ -186,7 +186,7 @@ GND                          : AC16      : gnd    :                   :         
 VCCPD3B4A                    : AC17      : power  :                   : 3.3V    : 3B, 4A    :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : AC18      :        :                   :         : 4A        :                
 VCCPD3B4A                    : AC19      : power  :                   : 3.3V    : 3B, 4A    :                
-KEY[3]                       : AC20      : input  : 2.5 V             :         : 4A        : N              
+RESERVED_INPUT_WITH_WEAK_PULLUP : AC20      :        :                   :         : 4A        :                
 VCCIO4A                      : AC21      : power  :                   : 3.3V    : 4A        :                
 LEDR[9]                      : AC22      : output : 3.3-V LVTTL       :         : 4A        : Y              
 LEDR[2]                      : AC23      : output : 3.3-V LVTTL       :         : 4A        : Y              
@@ -272,7 +272,7 @@ GND                          : AF12      : gnd    :                   :         
 DRAM_BA[0]                   : AF13      : output : 3.3-V LVTTL       :         : 3B        : Y              
 CLOCK_50                     : AF14      : input  : 3.3-V LVTTL       :         : 3B        : Y              
 DRAM_ADDR[7]                 : AF15      : output : 3.3-V LVTTL       :         : 3B        : Y              
-RESERVED_INPUT_WITH_WEAK_PULLUP : AF16      :        :                   :         : 4A        :                
+KEY[2]                       : AF16      : input  : 2.5 V             :         : 4A        : N              
 GND                          : AF17      : gnd    :                   :         :           :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : AF18      :        :                   :         : 4A        :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : AF19      :        :                   :         : 4A        :                
@@ -350,7 +350,7 @@ RESERVED_INPUT_WITH_WEAK_PULLUP : AH30      :        :                   :      
 GPIO[4]                      : AJ1       : input  : 3.3-V LVTTL       :         : 3A        : Y              
 GPIO[5]                      : AJ2       : input  : 3.3-V LVTTL       :         : 3A        : Y              
 GND                          : AJ3       : gnd    :                   :         :           :                
-KEY[2]                       : AJ4       : input  : 2.5 V             :         : 3B        : N              
+RESERVED_INPUT_WITH_WEAK_PULLUP : AJ4       :        :                   :         : 3B        :                
 DRAM_DQ[15]                  : AJ5       : bidir  : 3.3-V LVTTL       :         : 3B        : Y              
 DRAM_DQ[14]                  : AJ6       : bidir  : 3.3-V LVTTL       :         : 3B        : Y              
 DRAM_DQ[1]                   : AJ7       : bidir  : 3.3-V LVTTL       :         : 3B        : Y              
@@ -370,7 +370,7 @@ RESERVED_INPUT_WITH_WEAK_PULLUP : AJ20      :        :                   :      
 RESERVED_INPUT_WITH_WEAK_PULLUP : AJ21      :        :                   :         : 4A        :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : AJ22      :        :                   :         : 4A        :                
 VCCIO4A                      : AJ23      : power  :                   : 3.3V    : 4A        :                
-RESERVED_INPUT_WITH_WEAK_PULLUP : AJ24      :        :                   :         : 4A        :                
+KEY[3]                       : AJ24      : input  : 2.5 V             :         : 4A        : N              
 RESERVED_INPUT_WITH_WEAK_PULLUP : AJ25      :        :                   :         : 4A        :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : AJ26      :        :                   :         : 4A        :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : AJ27      :        :                   :         : 4A        :                

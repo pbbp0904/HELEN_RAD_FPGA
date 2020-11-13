@@ -1,7 +1,6 @@
 	soc_system u0 (
 		.clk_clk                                  (<connected-to-clk_clk>),                                  //                               clk.clk
 		.dcc_data_0_external_connection_export    (<connected-to-dcc_data_0_external_connection_export>),    //    dcc_data_0_external_connection.export
-		.dcc_data_1_external_connection_export    (<connected-to-dcc_data_1_external_connection_export>),    //    dcc_data_1_external_connection.export
 		.dcc_data_10_external_connection_export   (<connected-to-dcc_data_10_external_connection_export>),   //   dcc_data_10_external_connection.export
 		.dcc_data_11_external_connection_export   (<connected-to-dcc_data_11_external_connection_export>),   //   dcc_data_11_external_connection.export
 		.dcc_data_12_external_connection_export   (<connected-to-dcc_data_12_external_connection_export>),   //   dcc_data_12_external_connection.export
@@ -12,6 +11,7 @@
 		.dcc_data_17_external_connection_export   (<connected-to-dcc_data_17_external_connection_export>),   //   dcc_data_17_external_connection.export
 		.dcc_data_18_external_connection_export   (<connected-to-dcc_data_18_external_connection_export>),   //   dcc_data_18_external_connection.export
 		.dcc_data_19_external_connection_export   (<connected-to-dcc_data_19_external_connection_export>),   //   dcc_data_19_external_connection.export
+		.dcc_data_1_external_connection_export    (<connected-to-dcc_data_1_external_connection_export>),    //    dcc_data_1_external_connection.export
 		.dcc_data_20_external_connection_export   (<connected-to-dcc_data_20_external_connection_export>),   //   dcc_data_20_external_connection.export
 		.dcc_data_21_external_connection_export   (<connected-to-dcc_data_21_external_connection_export>),   //   dcc_data_21_external_connection.export
 		.dcc_data_22_external_connection_export   (<connected-to-dcc_data_22_external_connection_export>),   //   dcc_data_22_external_connection.export
@@ -126,6 +126,7 @@
 		.memory_oct_rzqin                         (<connected-to-memory_oct_rzqin>),                         //                                  .oct_rzqin
 		.pps_count_out_external_connection_export (<connected-to-pps_count_out_external_connection_export>), // pps_count_out_external_connection.export
 		.reset_reset_n                            (<connected-to-reset_reset_n>),                            //                             reset.reset_n
-		.sw_external_connection_export            (<connected-to-sw_external_connection_export>)             //            sw_external_connection.export
+		.sw_external_connection_export            (<connected-to-sw_external_connection_export>),            //            sw_external_connection.export
+		.pps_time_out_external_connection_export  (<connected-to-pps_time_out_external_connection_export>)   //  pps_time_out_external_connection.export
 	);
 
