@@ -106,8 +106,8 @@ assign	LED[6] 			= SW[3];		// gpio indicator
 assign	LED[7] 			= count[24];		// heartbeat
 
  // assign for ADC control signal
-assign	AD_SCLK			= SW[0];		// (DFS)Data Format Select
-assign	AD_SDIO			= SW[1];		// (DCS)Duty Cycle Stabilizer Select
+assign	AD_SCLK			= 1'b1;		// (DFS)Data Format Select
+assign	AD_SDIO			= 1'b0;		// (DCS)Duty Cycle Stabilizer Select
 assign	ADA_OE			= 1'b0;				// enable ADA output
 assign	ADA_SPI_CS		= 1'b1;				// disable ADA_SPI_CS (CSB)
 assign	ADB_OE			= 1'b0;				// enable ADB output

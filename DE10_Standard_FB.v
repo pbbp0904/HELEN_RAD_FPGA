@@ -475,17 +475,15 @@ module DE10_Standard_FB(input CLOCK2_50,
             counter   <= 0;
             led_level <= 0;
         end
-        
         else if (counter == 49999999)
         begin
-        counter   <= 0;
-        led_level <= ~led_level;
+            counter   <= 0;
+            led_level <= ~led_level;
+	     end
+        else
+            counter <= counter+1'b1;
     end
-    else
-    counter <= counter+1'b1;
-    
-    end
-    
+	 
 	 assign LEDR[8] = GPIO[0];
     assign LEDR[9] = led_level;
     
@@ -530,98 +528,122 @@ module DE10_Standard_FB(input CLOCK2_50,
     reg         [25:0]          times[NUM_WINDOWS-1:0];
     
     
-    always @(posedge ADA_DCO)
+
+	 
+	 
+	 always @(posedge ADA_DCO)
     begin
-        if (store_flag)
-        begin
-            // Storing to full_data buffer
-            
-            // Pre trigger window
-            for(pre_index = 0;pre_index<4;pre_index = pre_index+1)
-            begin
-                full_data[data_count*32+pre_index][15:0] = a_pre_window[pre_index];
-					 full_data[data_count*32+pre_index][31:16] = b_pre_window[pre_index];
-            end
-            
-            // Post trigger window
-            for(post_index = 0;post_index<28;post_index = post_index+1)
-            begin
-                full_data[data_count*32+post_index+4][15:0] = a_post_window[post_index];
-					 full_data[data_count*32+post_index+4][31:16] = b_post_window[post_index];
-            end
-            
-            // Time of last measurement plus 1/2 clock cycle
-            times[data_count] = counter;
-            
-            data_count = data_count + 1;
-            if (data_count >= NUM_WINDOWS)
-            begin
-                data_count = 0;
-            end
+	     if(store_flag == 0)
+		  begin
+				if (ADA_D >= 8192) // If value is negative and below the trigger value
+				begin
+					 if ((16384 - ADA_D) > 5400) // 3(00003),2(00002),1(00001),0(00000),-1(16384),-2(16383),-3(16382)...
+					 begin
+						  if (triggered == 0)
+						  begin
+							  triggered         <= 1;
+							  post_window_count <= 0;
+							  
+							  // Time of trigger (5th measurement)
+							  times[data_count] = counter;
+						  end
+					 end
+				end
 				
-			   if (data_count == send_count)
-			   begin
-			  	    data_count = data_count-1;
-			   end
-				
-				if (data_count == -1)
-            begin
-                data_count = NUM_WINDOWS-1;
-            end
-            
-            store_flag = 0;
-        end
-        else
-        begin
-            if (ADA_D >= 8192) // If value is negative and below the trigger value
-            begin
-                if ((16384-ADA_D) > 5800) // -1 for 14 bit is 16383 so this flips the sign from neg to pos and then compares with the threshold
-                begin
-                    triggered         = 1;
-                    post_window_count = 0;
-                end
-            end
-            
-            if (triggered)
-            begin
-                a_post_window[post_window_count][13:0] = ADA_D;
-					 a_post_window[post_window_count][14]= 0;
-					 a_post_window[post_window_count][15]= 0;
-                b_post_window[post_window_count][13:0] = ADB_D;
+				if (triggered == 1)
+				begin
+					 a_post_window[post_window_count][13:0] = ADA_D;
+					 a_post_window[post_window_count][14] = 0;
+					 a_post_window[post_window_count][15] = 0;
+					 b_post_window[post_window_count][13:0] = ADB_D;
 					 b_post_window[post_window_count][14] = 0;
 					 b_post_window[post_window_count][15] = 0;
-                post_window_count                = post_window_count+1;
-                
-                if (post_window_count>27)
-                begin
-                    triggered  = 0;
-                    store_flag = 1;
-                end
-            end
-            else
-            begin
-                
-                // Shifting A data
-                for(a_index = 0;a_index<3;a_index = a_index+1)
-                begin
-                    a_pre_window[a_index] = a_pre_window[a_index+1];
-                end
-                a_pre_window[3][13:0] = ADA_D;
+					 post_window_count <= post_window_count+1;
+					 
+					 if (post_window_count>27)
+					 begin
+						  triggered  <= 0;
+						  store_flag <= 1;
+					 end
+				end
+				else
+				begin
+					 
+					 // Shifting A data
+					 for(a_index = 0;a_index<3;a_index = a_index+1)
+					 begin
+						  a_pre_window[a_index] = a_pre_window[a_index+1];
+					 end
+					 a_pre_window[3][13:0] = ADA_D;
 					 a_pre_window[3][14] = 0;
 					 a_pre_window[3][15] = 0;
-                
-                // Shifting B data
-                for(b_index = 0;b_index<3;b_index = b_index+1)
-                begin
-                    b_pre_window[b_index] = b_pre_window[b_index+1];
-                end
-                b_pre_window[3][13:0] = ADB_D;
+					 
+					 // Shifting B data
+					 for(b_index = 0;b_index<3;b_index = b_index+1)
+					 begin
+						  b_pre_window[b_index] = b_pre_window[b_index+1];
+					 end
+					 b_pre_window[3][13:0] = ADB_D;
 					 b_pre_window[3][14] = 0;
 					 b_pre_window[3][15] = 0;
-            end
-        end
-        
-    end
+				end
+		  end
+		  else
+		  begin
+		      // Storing to full_data buffer
+			
+					// Pre trigger window
+					for(pre_index = 0;pre_index<4;pre_index = pre_index+1)
+					begin
+						 full_data[data_count*32+pre_index][15:0] = a_pre_window[pre_index];
+						 full_data[data_count*32+pre_index][31:16] = b_pre_window[pre_index];
+					end
+					
+					// Post trigger window
+					for(post_index = 0;post_index<28;post_index = post_index+1)
+					begin
+						 full_data[data_count*32+post_index+4][15:0] = a_post_window[post_index];
+						 full_data[data_count*32+post_index+4][31:16] = b_post_window[post_index];
+					end
+					
+					// Time of last measurement
+					//times[data_count] = counter;
+					
+					//data_count = data_count + 1;
+					
+					//if (data_count >= NUM_WINDOWS)
+					//begin
+					//    data_count = 0;
+					//end
+					
+					//if (data_count == send_count)
+					//begin
+					//    data_count = data_count - 1;
+					//end
+					
+					
+					//if (data_count < 0)
+					//begin
+					//    data_count = NUM_WINDOWS - 1;
+					//end
+					
+					
+					
+					data_count = (data_count + 1) % NUM_WINDOWS;
+					
+					
+					//if (data_count == send_count)
+					//begin
+					//	 data_count = (data_count - 1) % NUM_WINDOWS;
+					//end
+					
+					
+					store_flag <= 0;
+		  end
+	 end
+	 
+	 
+	 
     
 	 reg			 [25:0]			  pps_time;
     always @(posedge GPIO[0])
@@ -673,83 +695,97 @@ module DE10_Standard_FB(input CLOCK2_50,
     begin
         if (send_count != data_count)
         begin
-            data_0     <= full_data[send_count*32];
-            data_1     <= full_data[send_count*32+1];
-            data_2     <= full_data[send_count*32+2];
-            data_3     <= full_data[send_count*32+3];
-            data_4     <= full_data[send_count*32+4];
-            data_5     <= full_data[send_count*32+5];
-            data_6     <= full_data[send_count*32+6];
-            data_7     <= full_data[send_count*32+7];
-            data_8     <= full_data[send_count*32+8];
-            data_9     <= full_data[send_count*32+9];
-            data_10    <= full_data[send_count*32+10];
-            data_11    <= full_data[send_count*32+11];
-            data_12    <= full_data[send_count*32+12];
-            data_13    <= full_data[send_count*32+13];
-            data_14    <= full_data[send_count*32+14];
-            data_15    <= full_data[send_count*32+15];
-            data_16    <= full_data[send_count*32+16];
-            data_17    <= full_data[send_count*32+17];
-            data_18    <= full_data[send_count*32+18];
-            data_19    <= full_data[send_count*32+19];
-            data_20    <= full_data[send_count*32+20];
-            data_21    <= full_data[send_count*32+21];
-            data_22    <= full_data[send_count*32+22];
-            data_23    <= full_data[send_count*32+23];
-            data_24    <= full_data[send_count*32+24];
-            data_25    <= full_data[send_count*32+25];
-            data_26    <= full_data[send_count*32+26];
-            data_27    <= full_data[send_count*32+27];
-            data_28    <= full_data[send_count*32+28];
-            data_29    <= full_data[send_count*32+29];
-            data_30    <= full_data[send_count*32+30];
-            data_31    <= full_data[send_count*32+31];
-            data_time	 <= times[send_count];
-            
-            send_count = send_count + 1;
-            if (send_count >= NUM_WINDOWS)
-            begin
-                send_count = 0;
-            end
+		      //if (store_flag == 0)
+				//begin
+					data_0     <= full_data[send_count*32];
+					data_1     <= full_data[send_count*32+1];
+					data_2     <= full_data[send_count*32+2];
+					data_3     <= full_data[send_count*32+3];
+					data_4     <= full_data[send_count*32+4];
+					data_5     <= full_data[send_count*32+5];
+					data_6     <= full_data[send_count*32+6];
+					data_7     <= full_data[send_count*32+7];
+					data_8     <= full_data[send_count*32+8];
+					data_9     <= full_data[send_count*32+9];
+					data_10    <= full_data[send_count*32+10];
+					data_11    <= full_data[send_count*32+11];
+					data_12    <= full_data[send_count*32+12];
+					data_13    <= full_data[send_count*32+13];
+					data_14    <= full_data[send_count*32+14];
+					data_15    <= full_data[send_count*32+15];
+					data_16    <= full_data[send_count*32+16];
+					data_17    <= full_data[send_count*32+17];
+					data_18    <= full_data[send_count*32+18];
+					data_19    <= full_data[send_count*32+19];
+					data_20    <= full_data[send_count*32+20];
+					data_21    <= full_data[send_count*32+21];
+					data_22    <= full_data[send_count*32+22];
+					data_23    <= full_data[send_count*32+23];
+					data_24    <= full_data[send_count*32+24];
+					data_25    <= full_data[send_count*32+25];
+					data_26    <= full_data[send_count*32+26];
+					data_27    <= full_data[send_count*32+27];
+					data_28    <= full_data[send_count*32+28];
+					data_29    <= full_data[send_count*32+29];
+					data_30    <= full_data[send_count*32+30];
+					data_31    <= full_data[send_count*32+31];
+					data_time  <= times[send_count];
+				//end
         end
-		  else
-		  begin
-			   data_0     <= 32'hFFFFFFFF;
-            data_1     <= 32'hFFFFFFFF;
-            data_2     <= 32'hFFFFFFFF;
-            data_3     <= 32'hFFFFFFFF;
-            data_4     <= 32'hFFFFFFFF;
-            data_5     <= 32'hFFFFFFFF;
-            data_6     <= 32'hFFFFFFFF;
-            data_7     <= 32'hFFFFFFFF;
-            data_8     <= 32'hFFFFFFFF;
-            data_9     <= 32'hFFFFFFFF;
-            data_10    <= 32'hFFFFFFFF;
-            data_11    <= 32'hFFFFFFFF;
-            data_12    <= 32'hFFFFFFFF;
-            data_13    <= 32'hFFFFFFFF;
-            data_14    <= 32'hFFFFFFFF;
-            data_15    <= 32'hFFFFFFFF;
-            data_16    <= 32'hFFFFFFFF;
-            data_17    <= 32'hFFFFFFFF;
-            data_18    <= 32'hFFFFFFFF;
-            data_19    <= 32'hFFFFFFFF;
-            data_20    <= 32'hFFFFFFFF;
-            data_21    <= 32'hFFFFFFFF;
-            data_22    <= 32'hFFFFFFFF;
-            data_23    <= 32'hFFFFFFFF;
-            data_24    <= 32'hFFFFFFFF;
-            data_25    <= 32'hFFFFFFFF;
-            data_26    <= 32'hFFFFFFFF;
-            data_27    <= 32'hFFFFFFFF;
-            data_28    <= 32'hFFFFFFFF;
-            data_29    <= 32'hFFFFFFFF;
-            data_30    <= 32'hFFFFFFFF;
-            data_31    <= 32'hFFFFFFFF;
-		  
-		  end
     end
+		  
+		  
+	 always @(negedge hps_read)
+    begin
+        if (send_count != data_count)
+        begin
+		      //if (store_flag == 0)
+				//begin
+                send_count = (send_count + 1) % NUM_WINDOWS;
+				//end
+        end
+    end
+		  
+		  
+		  
+		  
+		  
+//		  else
+//		  begin
+//			   data_0     <= 32'hFFFFFFFF;
+//            data_1     <= 32'hFFFFFFFF;
+//            data_2     <= 32'hFFFFFFFF;
+//            data_3     <= 32'hFFFFFFFF;
+//            data_4     <= 32'hFFFFFFFF;
+//            data_5     <= 32'hFFFFFFFF;
+//            data_6     <= 32'hFFFFFFFF;
+//            data_7     <= 32'hFFFFFFFF;
+//            data_8     <= 32'hFFFFFFFF;
+//            data_9     <= 32'hFFFFFFFF;
+//            data_10    <= 32'hFFFFFFFF;
+//            data_11    <= 32'hFFFFFFFF;
+//            data_12    <= 32'hFFFFFFFF;
+//            data_13    <= 32'hFFFFFFFF;
+//            data_14    <= 32'hFFFFFFFF;
+//            data_15    <= 32'hFFFFFFFF;
+//            data_16    <= 32'hFFFFFFFF;
+//            data_17    <= 32'hFFFFFFFF;
+//            data_18    <= 32'hFFFFFFFF;
+//            data_19    <= 32'hFFFFFFFF;
+//            data_20    <= 32'hFFFFFFFF;
+//            data_21    <= 32'hFFFFFFFF;
+//            data_22    <= 32'hFFFFFFFF;
+//            data_23    <= 32'hFFFFFFFF;
+//            data_24    <= 32'hFFFFFFFF;
+//            data_25    <= 32'hFFFFFFFF;
+//            data_26    <= 32'hFFFFFFFF;
+//            data_27    <= 32'hFFFFFFFF;
+//            data_28    <= 32'hFFFFFFFF;
+//            data_29    <= 32'hFFFFFFFF;
+//            data_30    <= 32'hFFFFFFFF;
+//            data_31    <= 32'hFFFFFFFF;
+//		  
+//		  end
     
     assign dcc_data_0  = data_0;
     assign dcc_data_1  = data_1;
