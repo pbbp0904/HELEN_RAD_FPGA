@@ -4,6 +4,7 @@
 
 `timescale 1 ps / 1 ps
 module soc_system (
+		input  wire [31:0] buff_diff_out_external_connection_export, // buff_diff_out_external_connection.export
 		input  wire        clk_clk,                                  //                               clk.clk
 		input  wire [31:0] dcc_data_0_external_connection_export,    //    dcc_data_0_external_connection.export
 		input  wire [31:0] dcc_data_10_external_connection_export,   //   dcc_data_10_external_connection.export
@@ -131,6 +132,7 @@ module soc_system (
 		input  wire        memory_oct_rzqin,                         //                                  .oct_rzqin
 		input  wire [31:0] pps_count_out_external_connection_export, // pps_count_out_external_connection.export
 		input  wire [25:0] pps_time_out_external_connection_export,  //  pps_time_out_external_connection.export
+		input  wire [31:0] pulse_num_out_external_connection_export, // pulse_num_out_external_connection.export
 		input  wire        reset_reset_n,                            //                             reset.reset_n
 		input  wire [13:0] sw_external_connection_export             //            sw_external_connection.export
 	);
@@ -376,6 +378,16 @@ module soc_system (
 	wire   [1:0] mm_interconnect_0_pps_time_out_s1_address;                 // mm_interconnect_0:pps_time_out_s1_address -> pps_time_out:address
 	wire         mm_interconnect_0_pps_time_out_s1_write;                   // mm_interconnect_0:pps_time_out_s1_write -> pps_time_out:write_n
 	wire  [31:0] mm_interconnect_0_pps_time_out_s1_writedata;               // mm_interconnect_0:pps_time_out_s1_writedata -> pps_time_out:writedata
+	wire         mm_interconnect_0_pulse_num_out_s1_chipselect;             // mm_interconnect_0:pulse_num_out_s1_chipselect -> pulse_num_out:chipselect
+	wire  [31:0] mm_interconnect_0_pulse_num_out_s1_readdata;               // pulse_num_out:readdata -> mm_interconnect_0:pulse_num_out_s1_readdata
+	wire   [1:0] mm_interconnect_0_pulse_num_out_s1_address;                // mm_interconnect_0:pulse_num_out_s1_address -> pulse_num_out:address
+	wire         mm_interconnect_0_pulse_num_out_s1_write;                  // mm_interconnect_0:pulse_num_out_s1_write -> pulse_num_out:write_n
+	wire  [31:0] mm_interconnect_0_pulse_num_out_s1_writedata;              // mm_interconnect_0:pulse_num_out_s1_writedata -> pulse_num_out:writedata
+	wire         mm_interconnect_0_buff_diff_out_s1_chipselect;             // mm_interconnect_0:buff_diff_out_s1_chipselect -> buff_diff_out:chipselect
+	wire  [31:0] mm_interconnect_0_buff_diff_out_s1_readdata;               // buff_diff_out:readdata -> mm_interconnect_0:buff_diff_out_s1_readdata
+	wire   [1:0] mm_interconnect_0_buff_diff_out_s1_address;                // mm_interconnect_0:buff_diff_out_s1_address -> buff_diff_out:address
+	wire         mm_interconnect_0_buff_diff_out_s1_write;                  // mm_interconnect_0:buff_diff_out_s1_write -> buff_diff_out:write_n
+	wire  [31:0] mm_interconnect_0_buff_diff_out_s1_writedata;              // mm_interconnect_0:buff_diff_out_s1_writedata -> buff_diff_out:writedata
 	wire   [1:0] hps_0_h2f_lw_axi_master_awburst;                           // hps_0:h2f_lw_AWBURST -> mm_interconnect_1:hps_0_h2f_lw_axi_master_awburst
 	wire   [3:0] hps_0_h2f_lw_axi_master_arlen;                             // hps_0:h2f_lw_ARLEN -> mm_interconnect_1:hps_0_h2f_lw_axi_master_arlen
 	wire   [3:0] hps_0_h2f_lw_axi_master_wstrb;                             // hps_0:h2f_lw_WSTRB -> mm_interconnect_1:hps_0_h2f_lw_axi_master_wstrb
@@ -459,18 +471,32 @@ module soc_system (
 	wire         irq_mapper_001_receiver14_irq;                             // dcc_data_31:irq -> irq_mapper_001:receiver14_irq
 	wire         irq_mapper_001_receiver15_irq;                             // dcc_data_16:irq -> irq_mapper_001:receiver15_irq
 	wire         irq_mapper_001_receiver16_irq;                             // pps_time_out:irq -> irq_mapper_001:receiver16_irq
+	wire         irq_mapper_001_receiver17_irq;                             // pulse_num_out:irq -> irq_mapper_001:receiver17_irq
+	wire         irq_mapper_001_receiver18_irq;                             // buff_diff_out:irq -> irq_mapper_001:receiver18_irq
 	wire  [31:0] hps_0_f2h_irq1_irq;                                        // irq_mapper_001:sender_irq -> hps_0:f2h_irq_p1
 	wire         irq_mapper_002_receiver0_irq;                              // timer:irq -> irq_mapper_002:receiver0_irq
 	wire         irq_mapper_002_receiver1_irq;                              // jtag_uart:av_irq -> irq_mapper_002:receiver1_irq
 	wire  [31:0] nios2_gen2_irq_irq;                                        // irq_mapper_002:sender_irq -> nios2_gen2:irq
-	wire         rst_controller_reset_out_reset;                            // rst_controller:reset_out -> [dcc_data_0:reset_n, dcc_data_10:reset_n, dcc_data_11:reset_n, dcc_data_12:reset_n, dcc_data_13:reset_n, dcc_data_14:reset_n, dcc_data_15:reset_n, dcc_data_16:reset_n, dcc_data_17:reset_n, dcc_data_18:reset_n, dcc_data_19:reset_n, dcc_data_1:reset_n, dcc_data_20:reset_n, dcc_data_21:reset_n, dcc_data_22:reset_n, dcc_data_23:reset_n, dcc_data_24:reset_n, dcc_data_25:reset_n, dcc_data_26:reset_n, dcc_data_27:reset_n, dcc_data_28:reset_n, dcc_data_29:reset_n, dcc_data_2:reset_n, dcc_data_30:reset_n, dcc_data_31:reset_n, dcc_data_3:reset_n, dcc_data_4:reset_n, dcc_data_5:reset_n, dcc_data_6:reset_n, dcc_data_7:reset_n, dcc_data_8:reset_n, dcc_data_9:reset_n, dcc_time_out:reset_n, hps_read_bit:reset_n, jtag_uart:rst_n, ledr:reset_n, mm_bridge_0:reset, mm_interconnect_0:mm_bridge_0_reset_reset_bridge_in_reset_reset, mm_interconnect_1:mm_bridge_0_reset_reset_bridge_in_reset_reset, onchip_memory2:reset, pps_count_out:reset_n, pps_time_out:reset_n, rst_translator:in_reset, sw:reset_n, sysid_qsys:reset_n, timer:reset_n]
+	wire         rst_controller_reset_out_reset;                            // rst_controller:reset_out -> [buff_diff_out:reset_n, dcc_data_0:reset_n, dcc_data_10:reset_n, dcc_data_11:reset_n, dcc_data_12:reset_n, dcc_data_13:reset_n, dcc_data_14:reset_n, dcc_data_15:reset_n, dcc_data_16:reset_n, dcc_data_17:reset_n, dcc_data_18:reset_n, dcc_data_19:reset_n, dcc_data_1:reset_n, dcc_data_20:reset_n, dcc_data_21:reset_n, dcc_data_22:reset_n, dcc_data_23:reset_n, dcc_data_24:reset_n, dcc_data_25:reset_n, dcc_data_26:reset_n, dcc_data_27:reset_n, dcc_data_28:reset_n, dcc_data_29:reset_n, dcc_data_2:reset_n, dcc_data_30:reset_n, dcc_data_31:reset_n, dcc_data_3:reset_n, dcc_data_4:reset_n, dcc_data_5:reset_n, dcc_data_6:reset_n, dcc_data_7:reset_n, dcc_data_8:reset_n, dcc_data_9:reset_n, dcc_time_out:reset_n, hps_read_bit:reset_n, jtag_uart:rst_n, ledr:reset_n, mm_bridge_0:reset, mm_interconnect_0:mm_bridge_0_reset_reset_bridge_in_reset_reset, mm_interconnect_1:mm_bridge_0_reset_reset_bridge_in_reset_reset, onchip_memory2:reset, pps_count_out:reset_n, pps_time_out:reset_n, pulse_num_out:reset_n, rst_translator:in_reset, sw:reset_n, sysid_qsys:reset_n, timer:reset_n]
 	wire         rst_controller_reset_out_reset_req;                        // rst_controller:reset_req -> [onchip_memory2:reset_req, rst_translator:reset_req_in]
 	wire         rst_controller_001_reset_out_reset;                        // rst_controller_001:reset_out -> [irq_mapper_002:reset, mm_interconnect_0:nios2_gen2_reset_reset_bridge_in_reset_reset, nios2_gen2:reset_n]
 	wire         rst_controller_001_reset_out_reset_req;                    // rst_controller_001:reset_req -> [nios2_gen2:reset_req, rst_translator_001:reset_req_in]
 	wire         nios2_gen2_debug_reset_request_reset;                      // nios2_gen2:debug_reset_request -> rst_controller_001:reset_in0
 	wire         rst_controller_002_reset_out_reset;                        // rst_controller_002:reset_out -> mm_interconnect_1:hps_0_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset_reset
 
-	soc_system_dcc_data_0 dcc_data_0 (
+	soc_system_buff_diff_out buff_diff_out (
+		.clk        (clk_clk),                                       //                 clk.clk
+		.reset_n    (~rst_controller_reset_out_reset),               //               reset.reset_n
+		.address    (mm_interconnect_0_buff_diff_out_s1_address),    //                  s1.address
+		.write_n    (~mm_interconnect_0_buff_diff_out_s1_write),     //                    .write_n
+		.writedata  (mm_interconnect_0_buff_diff_out_s1_writedata),  //                    .writedata
+		.chipselect (mm_interconnect_0_buff_diff_out_s1_chipselect), //                    .chipselect
+		.readdata   (mm_interconnect_0_buff_diff_out_s1_readdata),   //                    .readdata
+		.in_port    (buff_diff_out_external_connection_export),      // external_connection.export
+		.irq        (irq_mapper_001_receiver18_irq)                  //                 irq.irq
+	);
+
+	soc_system_buff_diff_out dcc_data_0 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_0_s1_address),    //                  s1.address
@@ -482,7 +508,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver1_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_1 (
+	soc_system_buff_diff_out dcc_data_1 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_1_s1_address),    //                  s1.address
@@ -494,7 +520,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver2_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_10 (
+	soc_system_buff_diff_out dcc_data_10 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_10_s1_address),    //                  s1.address
@@ -506,7 +532,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver12_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_11 (
+	soc_system_buff_diff_out dcc_data_11 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_11_s1_address),    //                  s1.address
@@ -518,7 +544,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver13_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_12 (
+	soc_system_buff_diff_out dcc_data_12 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_12_s1_address),    //                  s1.address
@@ -530,7 +556,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver14_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_13 (
+	soc_system_buff_diff_out dcc_data_13 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_13_s1_address),    //                  s1.address
@@ -542,7 +568,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver15_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_14 (
+	soc_system_buff_diff_out dcc_data_14 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_14_s1_address),    //                  s1.address
@@ -554,7 +580,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver16_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_15 (
+	soc_system_buff_diff_out dcc_data_15 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_15_s1_address),    //                  s1.address
@@ -566,7 +592,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver17_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_16 (
+	soc_system_buff_diff_out dcc_data_16 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_16_s1_address),    //                  s1.address
@@ -578,7 +604,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver15_irq)                //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_17 (
+	soc_system_buff_diff_out dcc_data_17 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_17_s1_address),    //                  s1.address
@@ -590,7 +616,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver0_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_18 (
+	soc_system_buff_diff_out dcc_data_18 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_18_s1_address),    //                  s1.address
@@ -602,7 +628,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver1_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_19 (
+	soc_system_buff_diff_out dcc_data_19 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_19_s1_address),    //                  s1.address
@@ -614,7 +640,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver2_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_2 (
+	soc_system_buff_diff_out dcc_data_2 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_2_s1_address),    //                  s1.address
@@ -626,7 +652,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver4_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_20 (
+	soc_system_buff_diff_out dcc_data_20 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_20_s1_address),    //                  s1.address
@@ -638,7 +664,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver3_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_21 (
+	soc_system_buff_diff_out dcc_data_21 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_21_s1_address),    //                  s1.address
@@ -650,7 +676,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver4_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_22 (
+	soc_system_buff_diff_out dcc_data_22 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_22_s1_address),    //                  s1.address
@@ -662,7 +688,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver5_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_23 (
+	soc_system_buff_diff_out dcc_data_23 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_23_s1_address),    //                  s1.address
@@ -674,7 +700,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver6_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_24 (
+	soc_system_buff_diff_out dcc_data_24 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_24_s1_address),    //                  s1.address
@@ -686,7 +712,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver7_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_25 (
+	soc_system_buff_diff_out dcc_data_25 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_25_s1_address),    //                  s1.address
@@ -698,7 +724,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver8_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_26 (
+	soc_system_buff_diff_out dcc_data_26 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_26_s1_address),    //                  s1.address
@@ -710,7 +736,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver9_irq)                 //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_27 (
+	soc_system_buff_diff_out dcc_data_27 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_27_s1_address),    //                  s1.address
@@ -722,7 +748,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver10_irq)                //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_28 (
+	soc_system_buff_diff_out dcc_data_28 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_28_s1_address),    //                  s1.address
@@ -734,7 +760,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver11_irq)                //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_29 (
+	soc_system_buff_diff_out dcc_data_29 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_29_s1_address),    //                  s1.address
@@ -746,7 +772,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver12_irq)                //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_3 (
+	soc_system_buff_diff_out dcc_data_3 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_3_s1_address),    //                  s1.address
@@ -758,7 +784,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver5_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_30 (
+	soc_system_buff_diff_out dcc_data_30 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_30_s1_address),    //                  s1.address
@@ -770,7 +796,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver13_irq)                //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_31 (
+	soc_system_buff_diff_out dcc_data_31 (
 		.clk        (clk_clk),                                     //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),             //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_31_s1_address),    //                  s1.address
@@ -782,7 +808,7 @@ module soc_system (
 		.irq        (irq_mapper_001_receiver14_irq)                //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_4 (
+	soc_system_buff_diff_out dcc_data_4 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_4_s1_address),    //                  s1.address
@@ -794,7 +820,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver6_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_5 (
+	soc_system_buff_diff_out dcc_data_5 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_5_s1_address),    //                  s1.address
@@ -806,7 +832,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver7_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_6 (
+	soc_system_buff_diff_out dcc_data_6 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_6_s1_address),    //                  s1.address
@@ -818,7 +844,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver8_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_7 (
+	soc_system_buff_diff_out dcc_data_7 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_7_s1_address),    //                  s1.address
@@ -830,7 +856,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver9_irq)                    //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_8 (
+	soc_system_buff_diff_out dcc_data_8 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_8_s1_address),    //                  s1.address
@@ -842,7 +868,7 @@ module soc_system (
 		.irq        (irq_mapper_receiver10_irq)                   //                 irq.irq
 	);
 
-	soc_system_dcc_data_0 dcc_data_9 (
+	soc_system_buff_diff_out dcc_data_9 (
 		.clk        (clk_clk),                                    //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
 		.address    (mm_interconnect_0_dcc_data_9_s1_address),    //                  s1.address
@@ -1198,7 +1224,7 @@ module soc_system (
 		.freeze     (1'b0)                                            // (terminated)
 	);
 
-	soc_system_dcc_data_0 pps_count_out (
+	soc_system_buff_diff_out pps_count_out (
 		.clk        (clk_clk),                                       //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),               //               reset.reset_n
 		.address    (mm_interconnect_0_pps_count_out_s1_address),    //                  s1.address
@@ -1220,6 +1246,18 @@ module soc_system (
 		.readdata   (mm_interconnect_0_pps_time_out_s1_readdata),   //                    .readdata
 		.in_port    (pps_time_out_external_connection_export),      // external_connection.export
 		.irq        (irq_mapper_001_receiver16_irq)                 //                 irq.irq
+	);
+
+	soc_system_buff_diff_out pulse_num_out (
+		.clk        (clk_clk),                                       //                 clk.clk
+		.reset_n    (~rst_controller_reset_out_reset),               //               reset.reset_n
+		.address    (mm_interconnect_0_pulse_num_out_s1_address),    //                  s1.address
+		.write_n    (~mm_interconnect_0_pulse_num_out_s1_write),     //                    .write_n
+		.writedata  (mm_interconnect_0_pulse_num_out_s1_writedata),  //                    .writedata
+		.chipselect (mm_interconnect_0_pulse_num_out_s1_chipselect), //                    .chipselect
+		.readdata   (mm_interconnect_0_pulse_num_out_s1_readdata),   //                    .readdata
+		.in_port    (pulse_num_out_external_connection_export),      // external_connection.export
+		.irq        (irq_mapper_001_receiver17_irq)                  //                 irq.irq
 	);
 
 	soc_system_sw sw (
@@ -1278,6 +1316,11 @@ module soc_system (
 		.nios2_gen2_instruction_master_waitrequest     (nios2_gen2_instruction_master_waitrequest),                 //                                        .waitrequest
 		.nios2_gen2_instruction_master_read            (nios2_gen2_instruction_master_read),                        //                                        .read
 		.nios2_gen2_instruction_master_readdata        (nios2_gen2_instruction_master_readdata),                    //                                        .readdata
+		.buff_diff_out_s1_address                      (mm_interconnect_0_buff_diff_out_s1_address),                //                        buff_diff_out_s1.address
+		.buff_diff_out_s1_write                        (mm_interconnect_0_buff_diff_out_s1_write),                  //                                        .write
+		.buff_diff_out_s1_readdata                     (mm_interconnect_0_buff_diff_out_s1_readdata),               //                                        .readdata
+		.buff_diff_out_s1_writedata                    (mm_interconnect_0_buff_diff_out_s1_writedata),              //                                        .writedata
+		.buff_diff_out_s1_chipselect                   (mm_interconnect_0_buff_diff_out_s1_chipselect),             //                                        .chipselect
 		.dcc_data_0_s1_address                         (mm_interconnect_0_dcc_data_0_s1_address),                   //                           dcc_data_0_s1.address
 		.dcc_data_0_s1_write                           (mm_interconnect_0_dcc_data_0_s1_write),                     //                                        .write
 		.dcc_data_0_s1_readdata                        (mm_interconnect_0_dcc_data_0_s1_readdata),                  //                                        .readdata
@@ -1485,6 +1528,11 @@ module soc_system (
 		.pps_time_out_s1_readdata                      (mm_interconnect_0_pps_time_out_s1_readdata),                //                                        .readdata
 		.pps_time_out_s1_writedata                     (mm_interconnect_0_pps_time_out_s1_writedata),               //                                        .writedata
 		.pps_time_out_s1_chipselect                    (mm_interconnect_0_pps_time_out_s1_chipselect),              //                                        .chipselect
+		.pulse_num_out_s1_address                      (mm_interconnect_0_pulse_num_out_s1_address),                //                        pulse_num_out_s1.address
+		.pulse_num_out_s1_write                        (mm_interconnect_0_pulse_num_out_s1_write),                  //                                        .write
+		.pulse_num_out_s1_readdata                     (mm_interconnect_0_pulse_num_out_s1_readdata),               //                                        .readdata
+		.pulse_num_out_s1_writedata                    (mm_interconnect_0_pulse_num_out_s1_writedata),              //                                        .writedata
+		.pulse_num_out_s1_chipselect                   (mm_interconnect_0_pulse_num_out_s1_chipselect),             //                                        .chipselect
 		.sw_s1_address                                 (mm_interconnect_0_sw_s1_address),                           //                                   sw_s1.address
 		.sw_s1_write                                   (mm_interconnect_0_sw_s1_write),                             //                                        .write
 		.sw_s1_readdata                                (mm_interconnect_0_sw_s1_readdata),                          //                                        .readdata
@@ -1576,7 +1624,7 @@ module soc_system (
 		.sender_irq     (hps_0_f2h_irq0_irq)         //     sender.irq
 	);
 
-	soc_system_irq_mapper_001 irq_mapper_001 (
+	soc_system_irq_mapper irq_mapper_001 (
 		.clk            (),                              //        clk.clk
 		.reset          (),                              //  clk_reset.reset
 		.receiver0_irq  (irq_mapper_001_receiver0_irq),  //  receiver0.irq
@@ -1596,6 +1644,8 @@ module soc_system (
 		.receiver14_irq (irq_mapper_001_receiver14_irq), // receiver14.irq
 		.receiver15_irq (irq_mapper_001_receiver15_irq), // receiver15.irq
 		.receiver16_irq (irq_mapper_001_receiver16_irq), // receiver16.irq
+		.receiver17_irq (irq_mapper_001_receiver17_irq), // receiver17.irq
+		.receiver18_irq (irq_mapper_001_receiver18_irq), // receiver18.irq
 		.sender_irq     (hps_0_f2h_irq1_irq)             //     sender.irq
 	);
 

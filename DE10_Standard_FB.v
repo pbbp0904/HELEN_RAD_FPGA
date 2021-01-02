@@ -171,6 +171,11 @@ module DE10_Standard_FB(input CLOCK2_50,
     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  = 
     
     wire        hps_read;
+	 wire [31:0] pps_count_out;
+    wire [25:0] data_time_out;
+	 wire [25:0] pps_time_out;
+	 wire [31:0] pulse_num_out;
+	 wire [31:0] buff_diff_out;
     wire [31:0] dcc_data_0;
     wire [31:0] dcc_data_1;
     wire [31:0] dcc_data_2;
@@ -203,9 +208,7 @@ module DE10_Standard_FB(input CLOCK2_50,
     wire [31:0] dcc_data_29;
     wire [31:0] dcc_data_30;
     wire [31:0] dcc_data_31;
-    wire [31:0] pps_count_out;
-    wire [25:0] data_time_out;
-	 wire [25:0] pps_time_out;
+    
     
     wire        hps_fpga_reset_n;
     wire [9:0]  fpga_led_internal;
@@ -387,7 +390,9 @@ module DE10_Standard_FB(input CLOCK2_50,
     .dcc_time_out_external_connection_export	 (data_time_out),             //              dcc_time_out_external_connection.export
     .hps_read_bit_external_connection_export  (hps_read),                  //              hps_read_bit_external_connection.export
     .pps_count_out_external_connection_export (pps_count_out),
-	 .pps_time_out_external_connection_export  (pps_time_out)
+	 .pps_time_out_external_connection_export  (pps_time_out),
+	 .pulse_num_out_external_connection_export (pulse_num_out),
+	 .buff_diff_out_external_connection_export (buff_diff_out)
     );
     
     // Imported from DCC Demo
@@ -467,6 +472,7 @@ module DE10_Standard_FB(input CLOCK2_50,
     
     /* HEARTBEAT */
     reg [25:0] counter;
+	 
     reg  led_level;
     always @(posedge fpga_clk_50 or negedge hps_fpga_reset_n)
     begin
@@ -505,7 +511,7 @@ module DE10_Standard_FB(input CLOCK2_50,
     parameter NUM_WINDOWS = 10;
     parameter BUFFER_SIZE = 32*NUM_WINDOWS-1;
     
-    integer post_window_count, store_flag, data_count, time_index, a_index, b_index, pre_index, post_index;
+    integer post_window_count, store_flag, data_count, time_index, a_index, b_index, pre_index, post_index, send_flag;
     integer send_count;
     reg         [31:0]          pps_count;
     
@@ -526,6 +532,8 @@ module DE10_Standard_FB(input CLOCK2_50,
     reg         [31:0]          full_data[BUFFER_SIZE:0];
     // time array, corresponds to every 32 entries in full_data
     reg         [25:0]          times[NUM_WINDOWS-1:0];
+	 reg         [31:0]          pulse_num_track;
+	 reg         [31:0]          pulse_num_buff[NUM_WINDOWS-1:0];
     
     
 
@@ -544,27 +552,38 @@ module DE10_Standard_FB(input CLOCK2_50,
 							  triggered         <= 1;
 							  post_window_count <= 0;
 							  
-							  // Time of trigger (5th measurement)
-							  times[data_count] = counter;
+							  
 						  end
 					 end
 				end
 				
 				if (triggered == 1)
 				begin
+				
 					 a_post_window[post_window_count][13:0] = ADA_D;
 					 a_post_window[post_window_count][14] = 0;
 					 a_post_window[post_window_count][15] = 0;
 					 b_post_window[post_window_count][13:0] = ADB_D;
 					 b_post_window[post_window_count][14] = 0;
 					 b_post_window[post_window_count][15] = 0;
-					 post_window_count <= post_window_count+1;
+					 
+					 
+					 if (post_window_count == 0)
+					 begin
+					     // Time of trigger (5th measurement)
+						  times[data_count] = counter;
+						  pulse_num_track = pulse_num_track + 1;
+						  pulse_num_buff[data_count] = pulse_num_track;
+						  
+					 end
 					 
 					 if (post_window_count>27)
 					 begin
 						  triggered  <= 0;
-						  store_flag <= 1;
+						  store_flag = 1;
 					 end
+					 
+					 post_window_count <= post_window_count+1;
 				end
 				else
 				begin
@@ -638,7 +657,7 @@ module DE10_Standard_FB(input CLOCK2_50,
 					//end
 					
 					
-					store_flag <= 0;
+					store_flag = 0;
 		  end
 	 end
 	 
@@ -690,61 +709,74 @@ module DE10_Standard_FB(input CLOCK2_50,
     reg         [31:0]          data_30;
     reg         [31:0]          data_31;
     reg			 [25:0]			  data_time;
+	 reg			 [31:0]			  pulse_num;
+	 reg			 [31:0]			  buff_diff;
     //
     always @(posedge hps_read)
     begin
-        if (send_count != data_count)
+        
+        if (send_flag == 1)
+		  begin
+				data_0     <= full_data[send_count*32];
+				data_1     <= full_data[send_count*32+1];
+				data_2     <= full_data[send_count*32+2];
+				data_3     <= full_data[send_count*32+3];
+				data_4     <= full_data[send_count*32+4];
+				data_5     <= full_data[send_count*32+5];
+				data_6     <= full_data[send_count*32+6];
+				data_7     <= full_data[send_count*32+7];
+				data_8     <= full_data[send_count*32+8];
+				data_9     <= full_data[send_count*32+9];
+	     		data_10    <= full_data[send_count*32+10];
+				data_11    <= full_data[send_count*32+11];
+				data_12    <= full_data[send_count*32+12];
+				data_13    <= full_data[send_count*32+13];
+				data_14    <= full_data[send_count*32+14];
+				data_15    <= full_data[send_count*32+15];
+				data_16    <= full_data[send_count*32+16];
+				data_17    <= full_data[send_count*32+17];
+				data_18    <= full_data[send_count*32+18];
+				data_19    <= full_data[send_count*32+19];
+				data_20    <= full_data[send_count*32+20];
+				data_21    <= full_data[send_count*32+21];
+				data_22    <= full_data[send_count*32+22];
+				data_23    <= full_data[send_count*32+23];
+				data_24    <= full_data[send_count*32+24];
+				data_25    <= full_data[send_count*32+25];
+				data_26    <= full_data[send_count*32+26];
+				data_27    <= full_data[send_count*32+27];
+				data_28    <= full_data[send_count*32+28];
+				data_29    <= full_data[send_count*32+29];
+				data_30    <= full_data[send_count*32+30];
+				data_31    <= full_data[send_count*32+31];
+				data_time  <= times[send_count];
+				pulse_num  <= pulse_num_buff[send_count];
+				buff_diff  <= send_count;
+					
+		      send_flag = 0;
+		  end
+		  else
         begin
-		      //if (store_flag == 0)
-				//begin
-					data_0     <= full_data[send_count*32];
-					data_1     <= full_data[send_count*32+1];
-					data_2     <= full_data[send_count*32+2];
-					data_3     <= full_data[send_count*32+3];
-					data_4     <= full_data[send_count*32+4];
-					data_5     <= full_data[send_count*32+5];
-					data_6     <= full_data[send_count*32+6];
-					data_7     <= full_data[send_count*32+7];
-					data_8     <= full_data[send_count*32+8];
-					data_9     <= full_data[send_count*32+9];
-					data_10    <= full_data[send_count*32+10];
-					data_11    <= full_data[send_count*32+11];
-					data_12    <= full_data[send_count*32+12];
-					data_13    <= full_data[send_count*32+13];
-					data_14    <= full_data[send_count*32+14];
-					data_15    <= full_data[send_count*32+15];
-					data_16    <= full_data[send_count*32+16];
-					data_17    <= full_data[send_count*32+17];
-					data_18    <= full_data[send_count*32+18];
-					data_19    <= full_data[send_count*32+19];
-					data_20    <= full_data[send_count*32+20];
-					data_21    <= full_data[send_count*32+21];
-					data_22    <= full_data[send_count*32+22];
-					data_23    <= full_data[send_count*32+23];
-					data_24    <= full_data[send_count*32+24];
-					data_25    <= full_data[send_count*32+25];
-					data_26    <= full_data[send_count*32+26];
-					data_27    <= full_data[send_count*32+27];
-					data_28    <= full_data[send_count*32+28];
-					data_29    <= full_data[send_count*32+29];
-					data_30    <= full_data[send_count*32+30];
-					data_31    <= full_data[send_count*32+31];
-					data_time  <= times[send_count];
-				//end
+				if (send_count != data_count && (send_count + 1) % NUM_WINDOWS != data_count)
+		      begin
+				    send_count = (send_count + 1) % NUM_WINDOWS;
+					
+					 send_flag = 1;
+				end
         end
     end
 		  
 		  
-	 always @(negedge hps_read)
-    begin
-        if (send_count != data_count)
-        begin
-		      //if (store_flag == 0)
-				//begin
-                send_count = (send_count + 1) % NUM_WINDOWS;
-				//end
-        end
-    end
+//	 always @(negedge hps_read)
+//    begin
+//        if (send_count != data_count)
+//        begin
+//		      //if (store_flag == 0)
+//				//begin
+//                
+//				//end
+//        end
+//    end
 		  
 		  
 		  
@@ -787,6 +819,13 @@ module DE10_Standard_FB(input CLOCK2_50,
 //		  
 //		  end
     
+	 assign data_time_out = data_time;
+    assign pps_count_out = pps_count;
+	 assign pps_time_out  = pps_time;
+	 
+	 assign pulse_num_out = pulse_num;
+	 assign buff_diff_out  = buff_diff;
+	 
     assign dcc_data_0  = data_0;
     assign dcc_data_1  = data_1;
     assign dcc_data_2  = data_2;
@@ -820,9 +859,7 @@ module DE10_Standard_FB(input CLOCK2_50,
     assign dcc_data_30 = data_30;
     assign dcc_data_31 = data_31;
     
-    assign data_time_out = data_time;
-    assign pps_count_out = pps_count;
-	 assign pps_time_out  = pps_time;
+
     //
     //assign data_peak_out[13:0]  = data_peak_a;
     //assign data_peak_out[14]    = 0;

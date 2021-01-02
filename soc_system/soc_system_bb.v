@@ -1,6 +1,8 @@
 
 module soc_system (
+	buff_diff_out_external_connection_export,
 	clk_clk,
+	pulse_num_out_external_connection_export,
 	dcc_data_0_external_connection_export,
 	dcc_data_10_external_connection_export,
 	dcc_data_11_external_connection_export,
@@ -126,11 +128,13 @@ module soc_system (
 	memory_mem_dm,
 	memory_oct_rzqin,
 	pps_count_out_external_connection_export,
+	pps_time_out_external_connection_export,
 	reset_reset_n,
-	sw_external_connection_export,
-	pps_time_out_external_connection_export);	
+	sw_external_connection_export);	
 
+	input	[31:0]	buff_diff_out_external_connection_export;
 	input		clk_clk;
+	input	[31:0]	pulse_num_out_external_connection_export;
 	input	[31:0]	dcc_data_0_external_connection_export;
 	input	[31:0]	dcc_data_10_external_connection_export;
 	input	[31:0]	dcc_data_11_external_connection_export;
@@ -256,7 +260,7 @@ module soc_system (
 	output	[3:0]	memory_mem_dm;
 	input		memory_oct_rzqin;
 	input	[31:0]	pps_count_out_external_connection_export;
+	input	[25:0]	pps_time_out_external_connection_export;
 	input		reset_reset_n;
 	input	[13:0]	sw_external_connection_export;
-	input	[25:0]	pps_time_out_external_connection_export;
 endmodule

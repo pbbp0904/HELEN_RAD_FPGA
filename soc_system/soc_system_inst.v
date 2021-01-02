@@ -1,5 +1,7 @@
 	soc_system u0 (
+		.buff_diff_out_external_connection_export (<connected-to-buff_diff_out_external_connection_export>), // buff_diff_out_external_connection.export
 		.clk_clk                                  (<connected-to-clk_clk>),                                  //                               clk.clk
+		.pulse_num_out_external_connection_export (<connected-to-pulse_num_out_external_connection_export>), // pulse_num_out_external_connection.export
 		.dcc_data_0_external_connection_export    (<connected-to-dcc_data_0_external_connection_export>),    //    dcc_data_0_external_connection.export
 		.dcc_data_10_external_connection_export   (<connected-to-dcc_data_10_external_connection_export>),   //   dcc_data_10_external_connection.export
 		.dcc_data_11_external_connection_export   (<connected-to-dcc_data_11_external_connection_export>),   //   dcc_data_11_external_connection.export
@@ -125,8 +127,8 @@
 		.memory_mem_dm                            (<connected-to-memory_mem_dm>),                            //                                  .mem_dm
 		.memory_oct_rzqin                         (<connected-to-memory_oct_rzqin>),                         //                                  .oct_rzqin
 		.pps_count_out_external_connection_export (<connected-to-pps_count_out_external_connection_export>), // pps_count_out_external_connection.export
+		.pps_time_out_external_connection_export  (<connected-to-pps_time_out_external_connection_export>),  //  pps_time_out_external_connection.export
 		.reset_reset_n                            (<connected-to-reset_reset_n>),                            //                             reset.reset_n
-		.sw_external_connection_export            (<connected-to-sw_external_connection_export>),            //            sw_external_connection.export
-		.pps_time_out_external_connection_export  (<connected-to-pps_time_out_external_connection_export>)   //  pps_time_out_external_connection.export
+		.sw_external_connection_export            (<connected-to-sw_external_connection_export>)             //            sw_external_connection.export
 	);
 
