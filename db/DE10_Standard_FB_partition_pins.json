@@ -12,11 +12,11 @@
 					"strict" : false
 				},
 				{
-					"name" : "LEDR[7]",
+					"name" : "LEDR[3]",
 					"strict" : false
 				},
 				{
-					"name" : "LEDR[3]",
+					"name" : "LEDR[7]",
 					"strict" : false
 				},
 				{
@@ -100,11 +100,11 @@
 					"strict" : false
 				},
 				{
-					"name" : "ADA_D[0]",
+					"name" : "ADA_D[13]",
 					"strict" : false
 				},
 				{
-					"name" : "ADA_D[13]",
+					"name" : "ADA_D[0]",
 					"strict" : false
 				},
 				{

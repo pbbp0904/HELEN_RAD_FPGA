@@ -511,7 +511,7 @@ module DE10_Standard_FB(input CLOCK2_50,
     parameter NUM_WINDOWS = 10;
     parameter BUFFER_SIZE = 32*NUM_WINDOWS-1;
     
-    integer post_window_count, store_flag, data_count, time_index, a_index, b_index, pre_index, post_index, send_flag;
+    integer post_window_count, store_flag, data_count, time_index, a_index, b_index, pre_index, post_index, send_flag, ready_flag;
     integer send_count;
     reg         [31:0]          pps_count;
     
@@ -541,11 +541,13 @@ module DE10_Standard_FB(input CLOCK2_50,
 	 
 	 always @(posedge ADA_DCO)
     begin
+	     if(ready_flag == 0)
+		  begin
 	     if(store_flag == 0)
 		  begin
 				if (ADA_D >= 8192) // If value is negative and below the trigger value
 				begin
-					 if ((16384 - ADA_D) > 5400) // 3(00003),2(00002),1(00001),0(00000),-1(16384),-2(16383),-3(16382)...
+					 if ((16384 - ADA_D) > 2000) // 3(00003),2(00002),1(00001),0(00000),-1(16384),-2(16383),-3(16382)... 682 is 1/12 of max
 					 begin
 						  if (triggered == 0)
 						  begin
@@ -648,7 +650,7 @@ module DE10_Standard_FB(input CLOCK2_50,
 					
 					
 					
-					data_count = (data_count + 1) % NUM_WINDOWS;
+					//data_count = (data_count + 1) % NUM_WINDOWS;
 					
 					
 					//if (data_count == send_count)
@@ -656,9 +658,12 @@ module DE10_Standard_FB(input CLOCK2_50,
 					//	 data_count = (data_count - 1) % NUM_WINDOWS;
 					//end
 					
-					
+					data_count = (data_count + 1) % NUM_WINDOWS;
 					store_flag = 0;
+					
 		  end
+		  end
+		  ready_flag = (ready_flag + 1) % 3;
 	 end
 	 
 	 
@@ -751,7 +756,7 @@ module DE10_Standard_FB(input CLOCK2_50,
 				data_31    <= full_data[send_count*32+31];
 				data_time  <= times[send_count];
 				pulse_num  <= pulse_num_buff[send_count];
-				buff_diff  <= send_count;
+				buff_diff  <= data_count-send_count;
 					
 		      send_flag = 0;
 		  end
